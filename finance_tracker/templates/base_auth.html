@@ -26,6 +26,8 @@
             >
         </header>
         <div class="container-fluid">
+            {% include "partials/_messages.html" %}
+
             <main class="d-flex align-items-center justify-content-center mt-5">
                 {% block content %}{% endblock content %}
             </main>

@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    const submitBtn = $("#submitBtn");
+
+    // User
     const usernameField = $("#usernameField");
     const usernameCheck = $(".usernameCheck");
     const invalidFeedback = $("#invalidFeedback");
@@ -20,10 +23,13 @@ $(document).ready(function () {
                 .then((data) => {
                     usernameCheck.hide();
                     if (data.username_error) {
+                        // submitBtn.attr("disabled", "disabled");
+                        submitBtn.prop("disabled", true);
                         usernameField.addClass("is-invalid");
                         invalidFeedback.find("p").text(data.username_error);
                         invalidFeedback.show();
                     } else {
+                        submitBtn.prop("disabled", false);
                         usernameField.removeClass("is-invalid");
                         invalidFeedback.hide();
                     }
@@ -43,6 +49,7 @@ $(document).ready(function () {
         }
     });
 
+    // Email
     const emailField = $("#emailField");
     const emailCheck = $(".emailCheck");
     const emailFeedback = $("#emailFeedback");
@@ -65,9 +72,11 @@ $(document).ready(function () {
                     emailCheck.hide();
                     if (data.email_error) {
                         emailField.addClass("is-invalid");
+                        submitBtn.prop("disabled", true);
                         emailFeedback.find("p").text(data.email_error);
                         emailFeedback.show();
                     } else {
+                        submitBtn.prop("disabled", false);
                         emailField.removeClass("is-invalid");
                         emailFeedback.hide();
                     }
@@ -87,6 +96,7 @@ $(document).ready(function () {
         }
     });
 
+    // Password
     const showPassword = $(".showPassword");
     const passwordField = $("#passwordField");
 
@@ -99,6 +109,17 @@ $(document).ready(function () {
             showPassword.text("SHOW");
         }
     };
-
     showPassword.on("click", handlePasswordToggle);
+
+    showPassword.hover(
+        function () {
+            $(this).css("cursor", "pointer");
+        },
+        function () {
+            $(this).css("cursor", "default");
+        }
+    );
+    // Register Form Submit
+
+    submitBtn.on("click", handleSubmit);
 });
