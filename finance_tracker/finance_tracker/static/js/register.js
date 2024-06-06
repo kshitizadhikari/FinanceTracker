@@ -2,9 +2,7 @@ $(document).ready(function () {
     const usernameField = $("#usernameField");
     const usernameCheck = $(".usernameCheck");
     const invalidFeedback = $("#invalidFeedback");
-
     usernameCheck.hide();
-
     usernameField.on("keyup", (e) => {
         const usernameVal = e.target.value;
         if (usernameVal.length > 2) {
@@ -48,9 +46,7 @@ $(document).ready(function () {
     const emailField = $("#emailField");
     const emailCheck = $(".emailCheck");
     const emailFeedback = $("#emailFeedback");
-
     emailCheck.hide();
-
     emailField.on("keyup", (e) => {
         const emailVal = e.target.value;
         if (emailVal.length > 6) {
@@ -90,4 +86,19 @@ $(document).ready(function () {
             emailCheck.hide();
         }
     });
+
+    const showPassword = $(".showPassword");
+    const passwordField = $("#passwordField");
+
+    handlePasswordToggle = (e) => {
+        if (passwordField.attr("type") === "password") {
+            passwordField.attr("type", "text");
+            showPassword.text("HIDE");
+        } else {
+            passwordField.attr("type", "password");
+            showPassword.text("SHOW");
+        }
+    };
+
+    showPassword.on("click", handlePasswordToggle);
 });
