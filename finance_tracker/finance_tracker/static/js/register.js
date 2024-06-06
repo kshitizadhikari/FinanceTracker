@@ -26,3 +26,30 @@ usernameField.on("keyup", (e) => {
             });
     }
 });
+
+emailField = $("#emailField");
+emailFeedback = $("#emailFeedback");
+
+emailField.on("keyup", (e) => {
+    const emailVal = e.target.value;
+    if (emailVal.length > 8) {
+        fetch("/auth/email-validation", {
+            method: "POST",
+            body: JSON.stringify({
+                email: emailVal,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.email_error) {
+                    emailField.addClass("is-invalid");
+                    emailFeedback.css("display", "block");
+                    emailFeedback.find("p").text(data.email_error);
+                } else {
+                    emailField.removeClass("is-invalid");
+                    emailFeedback.css("display", "none");
+                    // emailFeedback.find("p").text(data.email_error);
+                }
+            });
+    }
+});
