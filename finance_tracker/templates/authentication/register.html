@@ -1,0 +1,59 @@
+{% extends "base_auth.html" %} {% load static %} {% block content %}
+
+<div class="col-md-6">
+    <div class="card p-4">
+        <div class="card-title"></div>
+        <div class="card-body">
+            <div class="text text-center mb-5">
+                <h4>Register !!</h4>
+            </div>
+            <form action="" method="post">
+                <div class="form-group mb-4">
+                    <input
+                        type="text"
+                        name="username"
+                        id="usernameField"
+                        class="form-control form-control-sm"
+                        placeholder="username"
+                    />
+                    <div class="invalid-feedback" id="invalidFeedback" style="display:none">
+                        <p></p>
+                    </div>
+                </div>
+            
+                <div class="form-group mb-4">
+                    <input
+                        type="email"
+                        name="email"
+                        id="emailField"
+                        class="form-control form-control-sm"
+                        placeholder="email"
+                    />
+                </div>
+                <div class="form-group mb-2">
+                    <input
+                        type="password"
+                        name="password"
+                        id="passwordField"
+                        class="form-control form-control-sm"
+                        placeholder="password"
+                    />
+                </div>
+                <small class="float-right">SHOW</small>
+
+                <div class="form-group mt-4">
+                    <input
+                        type="submit"
+                        value="Register"
+                        class="btn btn-primary btn-block"
+                    />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static "js/register.js" %}">
+
+</script>
+{% endblock content %}
