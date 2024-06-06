@@ -18,14 +18,14 @@ class RegisterView(View):
 class UsernameValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
-        username = data['username']
+        form_username = data['username']
 
-        if not str(username).isalnum():
+        if not str(form_username).isalnum():
             return JsonResponse({
                 "username_error": "Username should only contain letters and numbers",
             }, status=400)
         
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username=form_username).exists():
             return JsonResponse({
                 "username_error": "User with this username already exists",
             }, status=409)
@@ -38,14 +38,14 @@ class UsernameValidationView(View):
 class EmailValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
-        email = data['email']
+        form_email = data['email']
 
-        if not validate_email(email):
+        if not validate_email(form_email):
             return JsonResponse({
                 "email_error": "Invalid Email",
             }, status=400)
         
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=form_email).exists():
             return JsonResponse({
                 "email_error": "User with this email already exists",
             }, status=409)

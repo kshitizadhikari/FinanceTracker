@@ -1,55 +1,93 @@
-console.log("hello from register.js");
+$(document).ready(function () {
+    const usernameField = $("#usernameField");
+    const usernameCheck = $(".usernameCheck");
+    const invalidFeedback = $("#invalidFeedback");
 
-usernameField = $("#usernameField");
-invalidFeedback = $("#invalidFeedback");
+    usernameCheck.hide();
 
-usernameField.on("keyup", (e) => {
-    const usernameVal = e.target.value;
-    if (usernameVal.length > 2) {
-        fetch("/auth/username-validation", {
-            method: "POST",
-            body: JSON.stringify({
-                username: usernameVal,
-            }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.username_error) {
-                    usernameField.addClass("is-invalid");
-                    invalidFeedback.css("display", "block");
-                    invalidFeedback.find("p").text(data.username_error);
-                } else {
-                    usernameField.removeClass("is-invalid");
-                    invalidFeedback.css("display", "none");
-                    // invalidFeedback.find("p").text(data.username_error);
-                }
-            });
-    }
-});
+    usernameField.on("keyup", (e) => {
+        const usernameVal = e.target.value;
+        if (usernameVal.length > 2) {
+            usernameCheck.text(`Checking ${usernameVal}`).show();
+            invalidFeedback.hide();
 
-emailField = $("#emailField");
-emailFeedback = $("#emailFeedback");
+            fetch("/auth/username-validation", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username: usernameVal }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    usernameCheck.hide();
+                    if (data.username_error) {
+                        usernameField.addClass("is-invalid");
+                        invalidFeedback.find("p").text(data.username_error);
+                        invalidFeedback.show();
+                    } else {
+                        usernameField.removeClass("is-invalid");
+                        invalidFeedback.hide();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    usernameCheck.hide();
+                    invalidFeedback
+                        .find("p")
+                        .text("An error occurred while checking the username.");
+                    invalidFeedback.show();
+                });
+        } else {
+            usernameField.removeClass("is-invalid");
+            invalidFeedback.hide();
+            usernameCheck.hide();
+        }
+    });
 
-emailField.on("keyup", (e) => {
-    const emailVal = e.target.value;
-    if (emailVal.length > 8) {
-        fetch("/auth/email-validation", {
-            method: "POST",
-            body: JSON.stringify({
-                email: emailVal,
-            }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.email_error) {
-                    emailField.addClass("is-invalid");
-                    emailFeedback.css("display", "block");
-                    emailFeedback.find("p").text(data.email_error);
-                } else {
-                    emailField.removeClass("is-invalid");
-                    emailFeedback.css("display", "none");
-                    // emailFeedback.find("p").text(data.email_error);
-                }
-            });
-    }
+    const emailField = $("#emailField");
+    const emailCheck = $(".emailCheck");
+    const emailFeedback = $("#emailFeedback");
+
+    emailCheck.hide();
+
+    emailField.on("keyup", (e) => {
+        const emailVal = e.target.value;
+        if (emailVal.length > 6) {
+            emailCheck.text(`Checking ${emailVal}`).show();
+            emailFeedback.hide();
+
+            fetch("/auth/email-validation", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: emailVal }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    emailCheck.hide();
+                    if (data.email_error) {
+                        emailField.addClass("is-invalid");
+                        emailFeedback.find("p").text(data.email_error);
+                        emailFeedback.show();
+                    } else {
+                        emailField.removeClass("is-invalid");
+                        emailFeedback.hide();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    emailCheck.hide();
+                    emailFeedback
+                        .find("p")
+                        .text("An error occurred while checking the username.");
+                    emailFeedback.show();
+                });
+        } else {
+            emailField.removeClass("is-invalid");
+            emailFeedback.hide();
+            emailCheck.hide();
+        }
+    });
 });
