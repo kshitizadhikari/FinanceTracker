@@ -119,7 +119,11 @@ $(document).ready(function () {
             $(this).css("cursor", "default");
         }
     );
+    
     // Register Form Submit
 
+    handleSubmit = (e) => {
+        console.log(e.data);
+    };
     submitBtn.on("click", handleSubmit);
 });

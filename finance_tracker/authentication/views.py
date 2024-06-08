@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 import json
 from django.http import JsonResponse
@@ -11,10 +11,25 @@ class RegisterView(View):
         return render(request, 'authentication/register.html')
 
     def post(self, request):
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
+        form_username = request.POST['username']
+        form_email = request.POST['email']
+        form_password = request.POST['password']
 
+        if len(form_password) < 6:
+            messages.error(request, "Password Too Short")
+        elif User.objects.filter(username=form_username).exists():
+            messages.error(request, f"User already exists with the username {form_username}")
+        elif User.objects.filter(email=form_email).exists():
+            messages.error(request, f"User with {form_email} already exists")
+        else:
+            user = User.objects.create_user(
+                username=form_username,
+                email=form_email,
+            )
+            user.set_password(form_password)
+            user.save()
+            messages.success(request, "Account created successfully!")
+            return redirect('login')  # Redirect to a different page after successful registration
         
         return render(request, 'authentication/register.html')
 
