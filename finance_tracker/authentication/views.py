@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import json
+import os
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
+from django.core.mail import EmailMessage
+
 
 class RegisterView(View):
     def get(self, request):
@@ -25,9 +28,26 @@ class RegisterView(View):
             user = User.objects.create_user(
                 username=form_username,
                 email=form_email,
+                is_active=False
             )
             user.set_password(form_password)
             user.save()
+            
+
+            # send register email
+            email_subject = 'Welcome to Finance Tracker'
+            email_body = f"You have been successfully registered as {user.username}"
+            email_from = 'noreply@semycolon.com'
+            recipient_list = [user.email]
+
+            email = EmailMessage(
+                email_subject,
+                email_body,
+                email_from,
+                recipient_list
+            )
+            email.send(fail_silently=False)
+            
             messages.success(request, "Account created successfully!")
             return redirect('login')  # Redirect to a different page after successful registration
         
