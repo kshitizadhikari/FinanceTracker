@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect
+from django.utils.encoding import force_bytes   
 from django.views import View
+from .utils import token_generator
 import json
 import os
+from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
 
 
 class RegisterView(View):
@@ -34,9 +39,14 @@ class RegisterView(View):
             user.save()
             
 
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            domain = get_current_site(request).domain
+            link = reverse('activate', kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
+            activate_url = "http://" + domain + link
+
             # send register email
             email_subject = 'Welcome to Finance Tracker'
-            email_body = f"You have been successfully registered as {user.username}"
+            email_body = f"You have been successfully registered as {user.username}\n Please use the below link to verify your account:\n{activate_url}"
             email_from = 'noreply@semycolon.com'
             recipient_list = [user.email]
 
@@ -102,3 +112,8 @@ class LoginView(View):
     def post(self, request):
         # Handle POST request for login
         pass
+
+
+class VerificationView(View):
+    def get(self, request, uidb64, token):
+        return redirect('login')
