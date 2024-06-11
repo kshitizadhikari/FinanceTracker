@@ -10,3 +10,6 @@ class UserPreference(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user} preferences:\ncurrency: {self.currency }"
+    
+    class Meta:
+        db_table = 'user_preference'

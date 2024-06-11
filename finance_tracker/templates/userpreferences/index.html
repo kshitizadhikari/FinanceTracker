@@ -2,20 +2,25 @@
 
 <h1>User Prefernces</h1>
 <div class="container">
+    {% include "partials/_messages.html" %}
+    <form action="{% url "userpreferences-index" %}" method="POST">
+        {% csrf_token %}
     <div class="input-group">
         <select
             class="form-select"
             id="inputGroupSelect04"
             aria-label="Example select with button addon"
+            name="currency"
         >
-            <option selected>Choose...</option>
+            <option name="currency" value="{{currency.name}} - {{currency.value}}">{{user_pref.currency}}</option>
             {% for currency in currency_list %}
-            <option value="{{currency.value}}">
+            <option value="{{currency.name}} - {{currency.value}}" name="">
                 {{currency.name}} - {{currency.value}}
             </option>
             {% endfor %}
         </select>
-        <button class="btn btn-outline-secondary" type="button">Button</button>
+        <button class="btn btn-outline-secondary" type="submit">Save</button>
+    </form>
     </div>
 </div>
 
