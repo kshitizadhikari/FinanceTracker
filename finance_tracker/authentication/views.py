@@ -127,7 +127,8 @@ class LoginView(View):
                 return redirect('login')
             auth.login(request, user)
             messages.success(request, "You have been successfully logged in")
-            return redirect('login')  
+            # redirect to the index route of expenses app url
+            return redirect('expenses-index')  
         else:
             messages.error(request, "Invalid credentials")
             return redirect('login')
@@ -135,6 +136,7 @@ class LoginView(View):
 
 
 class VerificationView(View):
+
     def get(self, request, uidb64, token):
         try:
             id = force_str(urlsafe_base64_decode(uidb64))
@@ -156,3 +158,15 @@ class VerificationView(View):
             messages.error(request, "An error occurred during account activation.")
 
         return redirect('login')
+
+
+class LogoutView(View):
+    def post(self, request):
+        storage = messages.get_messages(request)
+        for _ in storage:
+            pass
+        auth.logout(request)
+        messages.success(request, "You have been logged out")
+        return redirect('login')
+    
+
