@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.utils.encoding import force_bytes   
+from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.views import View
 from .utils import token_generator
+from django.contrib import auth
 import json
 import os
 from django.urls import reverse
@@ -70,6 +71,7 @@ class UsernameValidationView(View):
         data = json.loads(request.body)
         form_username = data['username']
 
+
         if not str(form_username).isalnum():
             return JsonResponse({
                 "username_error": "Username should only contain letters and numbers",
@@ -110,10 +112,47 @@ class LoginView(View):
         return render(request, 'authentication/login.html')
 
     def post(self, request):
-        # Handle POST request for login
-        pass
+        username = request.POST['username']
+        password = request.POST['password']
+
+        if not username or not password:
+            messages.error(request, "Please fill all fields")
+            return redirect('login')
+        
+        user = auth.authenticate(username=username, password=password)
+
+        if user:
+            if not user.is_active:
+                messages.info(request, "Please activate your account using the link in your email")
+                return redirect('login')
+            auth.login(request, user)
+            messages.success(request, "You have been successfully logged in")
+            return redirect('login')  
+        else:
+            messages.error(request, "Invalid credentials")
+            return redirect('login')
+
 
 
 class VerificationView(View):
     def get(self, request, uidb64, token):
+        try:
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=id)
+
+            if token_generator.check_token(user, token):
+                if not user.is_active:
+                    user.is_active = True
+                    user.save()
+                    messages.success(request, "Account activated successfully.")
+                else:
+                    messages.info(request, "Account has already been activated.")
+            else:
+                messages.error(request, "Invalid activation link or account already activated.")
+
+        except User.DoesNotExist:
+            messages.error(request, "Invalid activation link.")
+        except Exception as ex:
+            messages.error(request, "An error occurred during account activation.")
+
         return redirect('login')
