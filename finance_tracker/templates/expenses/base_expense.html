@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" ><a href="{% url "expenses-index" %}" >Home</a></li>
+        <li class="breadcrumb-item" ><a href="{% url "add-expenses" %}" >Add Expense</a></li>
+        {% comment %} <li class="breadcrumb-item active" aria-current="page">Library</li> {% endcomment %}
+    </ol>
+</nav>
+{% block expense_content %}{% endblock expense_content %} {% endblock content %}
+
+<script>
+    $(document).ready(function() {
+
+        homeLink = $("#homeLink")
+        addExpenseLink = $("#addExpenseLink")
+
+
+        homeLink.on("click", function(e) {
+            console.log("Hello");
+        });
+
+
+    })
+</script>

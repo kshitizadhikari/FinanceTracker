@@ -21,9 +21,9 @@ def index(request):
             user_pref.save()
         else:
             UserPreference.objects.create(user=request.user, currency=currency)
-
         messages.success(request, "Currency saved successfully")
 
+    #GET
     currency_list = []
     currency_file_path = os.path.join(settings.BASE_DIR, 'currencies.json')
     with open(currency_file_path, "r") as f:
