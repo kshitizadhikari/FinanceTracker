@@ -1,11 +1,5 @@
 {% extends "base.html" %} {% block content %}
 
-<form action="{% url "logout" %}" method="POST">
-    {% csrf_token %}
-    <button class='nav-link' type="submit">Logout</button>
-
-</form>
-
 <h1>MAIN EXPENSE</h1>
 <ul class="list-group">
     <li class="list-group-item">hello</li>

@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>User Prefernces</h1>
+<div class="container">
+    <div class="input-group">
+        <select
+            class="form-select"
+            id="inputGroupSelect04"
+            aria-label="Example select with button addon"
+        >
+            <option selected>Choose...</option>
+            {% for currency in currency_list %}
+            <option value="{{currency.value}}">
+                {{currency.name}} - {{currency.value}}
+            </option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" type="button">Button</button>
+    </div>
+</div>
+
+{% endblock content %}
