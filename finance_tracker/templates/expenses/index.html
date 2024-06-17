@@ -1,6 +1,23 @@
 {% extends "expenses/base_expense.html" %} {% block expense_content %}
 <h1>MAIN EXPENSE</h1>
-<ul class="list-group">
-    <li class="list-group-item">hello</li>
-</ul>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Description</th>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expense in expenses %}
+        <tr>
+            <th scope="row">{{expense.category}}</th>
+            <th scope="row">{{expense.description}}</th>
+            <th scope="row">{{expense.date}}</th>
+            <th scope="row">{{expense.amount}}</th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock expense_content %}

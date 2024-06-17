@@ -5,8 +5,11 @@ from .models import Category, Expense
 
 @login_required(login_url='/auth/login')
 def index(request):
-    categories = Category.objects.all()
-    return render(request, 'expenses/index.html')
+    expenses = Expense.objects.all()
+    context = {
+        'expenses': expenses
+    }
+    return render(request, 'expenses/index.html', context)
 
 
 def add_expense(request):
@@ -23,7 +26,7 @@ def add_expense(request):
         description = request.POST["description"]
         category = request.POST["category"]
 
-        Expense.objects.create(amount=amount, date=date, description=description, owner=request.user , category=category)
+        Expense.objects.create(amount=amount, date=date, description=description, owner=request.user, category=category)
         messages.success(request, "Expense saved successfully")
 
     return render(request, 'expenses/add_expense.html', context)
