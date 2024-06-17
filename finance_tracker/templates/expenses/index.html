@@ -7,6 +7,7 @@
             <th scope="col">Description</th>
             <th scope="col">Date</th>
             <th scope="col">Amount</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -16,6 +17,7 @@
             <th scope="row">{{expense.description}}</th>
             <th scope="row">{{expense.date}}</th>
             <th scope="row">{{expense.amount}}</th>
+            <th scope="row"><a href="{% url "edit-expense" expense.id %}">Edit</a></th>
         </tr>
         {% endfor %}
     </tbody>

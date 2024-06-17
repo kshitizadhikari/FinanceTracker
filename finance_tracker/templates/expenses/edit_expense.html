@@ -1,0 +1,53 @@
+{% extends "expenses/base_expense.html" %}
+{% block expense_content %}
+<h1>EDIT EXPENSE</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form action="" method="POST">
+            {% include "partials/_messages.html" %}
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input
+                    value="{{ expense.amount }}"
+                    required
+                    type="text"
+                    class="form-control"
+                    name="amount"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input
+                    value="{{ expense.date }}"
+                    required
+                    type="date"
+                    class="form-control"
+                    name="date"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                    class="form-control"
+                    rows="4"
+                    name="description"
+                >{{ expense.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-control" name="category">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if expense.category.id == category.id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock expense_content %}
