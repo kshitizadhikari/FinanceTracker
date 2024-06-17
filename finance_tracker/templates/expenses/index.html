@@ -17,7 +17,7 @@
             <th scope="row">{{expense.description}}</th>
             <th scope="row">{{expense.date}}</th>
             <th scope="row">{{expense.amount}}</th>
-            <th scope="row"><a href="{% url "edit-expense" expense.id %}">Edit</a></th>
+            <th scope="row"><a href="{% url "edit-expense" expense.id %}">Edit</a> | <a href="{% url "delete-expense" expense.id %}">Delete</a></th>
         </tr>
         {% endfor %}
     </tbody>

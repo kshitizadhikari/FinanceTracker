@@ -4,7 +4,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="" method="POST">
+        <form action="{% url "edit-expense" expense.id %}" method="POST">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="amount" class="form-label">Amount</label>

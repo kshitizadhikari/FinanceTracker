@@ -27,7 +27,7 @@ def add_expense(request):
 
         Expense.objects.create(amount=amount, date=date, description=description, owner=request.user, category=Category.objects.get(pk=category_id))
         messages.success(request, "Expense saved successfully")
-        return redirect("expenses-index")
+        return redirect("index")
     return render(request, 'expenses/add_expense.html', context)
 
 
@@ -37,7 +37,7 @@ def add_expense_category(request):
         name = request.POST["name"]
         Category.objects.create(name=name)
         messages.success(request, "Category saved successfully")
-        return redirect("expenses-index")
+        return redirect("index")
     return render(request, 'expenses/add_category.html')
 
 
@@ -49,9 +49,10 @@ def edit_expense(request, id):
         expense.amount = request.POST['amount']
         expense.date = request.POST['date']
         expense.description = request.POST['description']
-        expense.category = Category.objects.get(id=request.POST['category'])
+        # expense.owner = request.user
+        expense.category = Category.objects.get(pk=request.POST['category'])
         expense.save()
-        return redirect('some_view_name')  # Redirect to some view after saving
+        return redirect('index')  # Redirect to some view after saving
 
     context = {
         'expense': expense,
@@ -59,3 +60,9 @@ def edit_expense(request, id):
     }
 
     return render(request, 'expenses/edit_expense.html', context)
+
+def delete_expense(request, id):
+    expense = Expense.objects.get(pk=id)
+    expense.delete()
+    messages.success(request, "Expense deleted successfully")
+    return redirect("index")
