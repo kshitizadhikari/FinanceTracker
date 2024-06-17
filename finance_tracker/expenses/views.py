@@ -5,7 +5,7 @@ from .models import Category, Expense
 
 @login_required(login_url='/auth/login')
 def index(request):
-    expenses = Expense.objects.all()
+    expenses = Expense.objects.filter(owner=request.user)
     context = {
         'expenses': expenses
     }
