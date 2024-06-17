@@ -4,7 +4,7 @@
 <div class="card">
     <div class="card-body">
         <form action="{% url "add-expense" %}" method="POST">
-            {% include "partials/_messages.html" %} {% csrf_token %}
+            {% csrf_token %}
             <div class="mb-3">
                 <label for="amount" class="form-label">Amount</label>
                 <input
@@ -44,7 +44,7 @@
                     name="category"
                 >
                     {% for category in categories %}
-                    <option name="category" value="{{category.name}}">
+                    <option name="category" value="{{category.id}}">
                         {{category.name}}
                     </option>
                     {% endfor %}

@@ -1,0 +1,23 @@
+{% extends "expenses/base_expense.html" %} {% block expense_content %}
+<h1>ADD CATEGORY</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form action="{% url "add-expense-category" %}" method="POST">
+            {% include "partials/_messages.html" %} {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                    required
+                    type="text"
+                    class="form-control"
+                    name="name"
+                />
+            </div>
+    
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock expense_content %}

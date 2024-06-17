@@ -19,17 +19,27 @@ def add_expense(request):
         'values': request.POST
     }
     
-
     if request.method == "POST":
         amount = request.POST["amount"]
         date = request.POST["date"]
         description = request.POST["description"]
-        category = request.POST["category"]
+        category_id = request.POST["category"]
 
-        Expense.objects.create(amount=amount, date=date, description=description, owner=request.user, category=category)
+        Expense.objects.create(amount=amount, date=date, description=description, owner=request.user, category=Category.objects.get(pk=category_id))
         messages.success(request, "Expense saved successfully")
-        return redirect("index")
+        return redirect("expenses-index")
     return render(request, 'expenses/add_expense.html', context)
+
+
+def add_expense_category(request):
+
+    if request.method == "POST":
+        name = request.POST["name"]
+        Category.objects.create(name=name)
+        messages.success(request, "Category saved successfully")
+        return redirect("expenses-index")
+    return render(request, 'expenses/add_category.html')
+
 
 def edit_expense(request, id):
     expense = Expense.objects.get(pk=id)
