@@ -128,7 +128,7 @@ class LoginView(View):
             auth.login(request, user)
             messages.success(request, "You have been successfully logged in")
             # redirect to the index route of expenses app url
-            return redirect('expenses-index')  
+            return redirect('index')  
         else:
             messages.error(request, "Invalid credentials")
             return redirect('login')
@@ -161,7 +161,7 @@ class VerificationView(View):
 
 
 class LogoutView(View):
-    def post(self, request):
+    def get(self, request):
         storage = messages.get_messages(request)
         for _ in storage:
             pass

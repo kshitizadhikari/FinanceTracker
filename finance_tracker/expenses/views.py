@@ -96,7 +96,7 @@ def edit_expense(request, id):
         'categories': categories,
     }
 
-    return render(request, 'expenses/edit_expense.html', context)
+    return render(request, 'expenses/edit_expense.html', context) 
 
 def delete_expense(request, id):
     expense = Expense.objects.get(pk=id)
