@@ -3,6 +3,26 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Category, Expense
+import json
+from django.db.models import Q, F
+from django.http import JsonResponse
+
+
+def search_expenses(request):
+    if request.method == "POST":
+        search_str = json.loads(request.body).get("searchText", "") 
+
+        expenses = Expense.objects.filter(
+            Q(amount__startswith=search_str, owner=request.user) |
+            Q(date__startswith=search_str, owner=request.user) |
+            Q(description__icontains=search_str, owner=request.user) |
+            Q(category__name__icontains=search_str, owner=request.user)
+        ).annotate(category_name=F('category__name'))
+
+        data = expenses.values('id', 'amount', 'date', 'description', 'category_name')
+
+        return JsonResponse(list(data), safe=False)
+
 
 @login_required(login_url='/auth/login')
 def index(request):
