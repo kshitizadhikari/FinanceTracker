@@ -24,11 +24,11 @@
         <tbody>
             {% for expense in page_obj %}
             <tr>
-                <th scope="row">{{expense.category}}</th>
-                <th scope="row">{{expense.description}}</th>
-                <th scope="row">{{expense.date}}</th>
-                <th scope="row">{{expense.amount}}</th>
-                <th scope="row"><a href="{% url "edit-expense" expense.id %}">Edit</a> | <a href="{% url "delete-expense" expense.id %}">Delete</a></th>
+                <td scope="row">{{expense.category}}</td>
+                <td scope="row">{{expense.description}}</td>
+                <td scope="row">{{expense.date}}</td>
+                <td scope="row">{{expense.amount}}</td>
+                <td scope="row"><a href="{% url "edit-expense" expense.id %}">Edit</a> | <a href="{% url "delete-expense" expense.id %}">Delete</a></td>
             </tr>
             {% endfor %}
         </tbody>

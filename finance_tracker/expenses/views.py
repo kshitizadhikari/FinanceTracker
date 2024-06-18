@@ -29,7 +29,9 @@ def index(request):
     pageItemCount = 2
     expenses = Expense.objects.filter(owner=request.user)
     paginator = Paginator(expenses, pageItemCount)
-    page_num = int(request.GET.get('page'))
+    page_num = 1
+    if request.GET.get('page'):
+        page_num = int(request.GET.get('page')) 
     page_obj = Paginator.get_page(paginator, page_num)
     page_obj = paginator.get_page(page_num)
     
@@ -80,7 +82,6 @@ def add_expense_category(request):
 def edit_expense(request, id):
     expense = Expense.objects.get(pk=id)
     categories = Category.objects.all()
-    print(expense.category)
     if request.method == "POST":
         expense.amount = request.POST['amount']
         expense.date = request.POST['date']

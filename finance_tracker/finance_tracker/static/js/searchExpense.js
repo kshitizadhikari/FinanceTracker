@@ -45,8 +45,10 @@ $(document).ready(function () {
                                 <td>${item.description}</td>
                                 <td>${item.date}</td>
                                 <td>${item.amount}</td>
-                                <td>sdfd</td>
-                            </tr>
+                                <td scope="row">
+                                    <a href="/edit-expense/${item.id}">Edit</a> | 
+                                    <a href="/delete-expense/${item.id}">Delete</a>
+                                </td> </tr>
                         `);
                         });
                     }
