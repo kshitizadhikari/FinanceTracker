@@ -7,6 +7,23 @@ import json
 from django.db.models import Q, F
 from django.http import JsonResponse
 
+
+def search_incomes(request):
+    if request.method == "POST":
+        search_str = json.loads(request.body).get("searchText", "") 
+
+        incomes = Income.objects.filter(
+            Q(amount__startswith=search_str, owner=request.user) |
+            Q(date__startswith=search_str, owner=request.user) |
+            Q(description__icontains=search_str, owner=request.user) |
+            Q(source__name__icontains=search_str, owner=request.user)
+        ).annotate(source_name=F('source__name'))
+
+        data = incomes.values('id', 'amount', 'date', 'description', 'source_name')
+
+        return JsonResponse(list(data), safe=False)
+
+
 @login_required(login_url='/auth/login')
 def index(request):
     pageItemCount = 2
