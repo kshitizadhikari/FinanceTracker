@@ -77,3 +77,10 @@ def edit_income(request, id):
     }
 
     return render(request, 'incomes/edit_income.html', context) 
+
+
+def delete_income(request, id):
+    income = Income.objects.get(pk=id)
+    income.delete()
+    messages.success(request, "Income deleted successfully")
+    return redirect("income-index")

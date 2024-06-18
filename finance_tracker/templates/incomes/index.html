@@ -28,7 +28,7 @@
                 <td scope="row">{{income.description}}</td>
                 <td scope="row">{{income.date}}</td>
                 <td scope="row">{{income.amount}}</td>
-                <td scope="row"><a href="{% url "edit-income" income.id %}">Edit</a></td>
+                <td scope="row"><a href="{% url "edit-income" income.id %}">Edit</a> | <a href="{% url "delete-income" income.id %}">Delete</a></td>
             </tr>
             {% endfor %}
         </tbody>
