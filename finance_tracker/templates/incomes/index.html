@@ -1,0 +1,96 @@
+{% extends "incomes/base_income.html" %} 
+{% load static %}
+{% block income_content %}
+
+<h1>MAIN INCOME PAGE</h1>
+<div class="row">
+    <div class="col-md-8">
+    </div>
+    <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="Search" id="searchField" />
+    </div>
+</div>
+<div class="original-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Source</th>
+                <th scope="col">Description</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for income in page_obj %}
+            <tr>
+                <td scope="row">{{income.source}}</td>
+                <td scope="row">{{income.description}}</td>
+                <td scope="row">{{income.date}}</td>
+                <td scope="row">{{income.amount}}</td>
+                <td scope="row">Actions</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="ajax-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="d-flex justify-content-between">
+    <div>
+        Showing page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+    </div>
+    <div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                {% endif %}
+                
+                {% for num in page_range %}
+                    {% if num > 0 and num <= page_obj.paginator.num_pages %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<script src="{% static "js/searchIncome.js" %}">
+
+</script>
+{% endblock income_content %}
