@@ -58,3 +58,22 @@ def add_income_source(request):
         messages.success(request, "Source saved successfully")
         return redirect("income-index")
     return render(request, 'incomes/add_source.html')
+
+def edit_income(request, id):
+    income = Income.objects.get(pk=id)
+    sources = Source.objects.all()
+    if request.method == "POST":
+        income.amount = request.POST['amount']
+        income.date = request.POST['date']
+        income.description = request.POST['description']
+        # income.owner = request.user
+        income.source = Source.objects.get(pk=request.POST['source'])
+        income.save()
+        return redirect('income-index')  # Redirect to some view after saving
+
+    context = {
+        'income': income,
+        'sources': sources,
+    }
+
+    return render(request, 'incomes/edit_income.html', context) 
