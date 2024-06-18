@@ -47,6 +47,14 @@ def add_income(request):
 
         Income.objects.create(amount=amount, date=date, description=description, owner=request.user, source=Source.objects.get(pk=source_id))
         messages.success(request, "Income saved successfully")
-        return redirect("index")
+        return redirect("income-index")
     return render(request, 'incomes/add_income.html', context)
     
+def add_income_source(request):
+
+    if request.method == "POST":
+        name = request.POST["name"]
+        Source.objects.create(name=name)
+        messages.success(request, "Source saved successfully")
+        return redirect("income-index")
+    return render(request, 'incomes/add_source.html')
