@@ -1,0 +1,58 @@
+{% extends "incomes/base_income.html" %} {% block income_content %}
+<h1>ADD Income</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form action="{% url "add-income" %}" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input
+                    value="{{values.amount}}"
+                    required
+                    type="text"
+                    class="form-control"
+                    name="amount"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input
+                    value="{{values.date}}"
+                    required
+                    type="date"
+                    class="form-control"
+                    name="date"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                    class="form-control"
+                    row="4"
+                    column="5"
+                    name="description"
+                >
+{{values.description}}
+                </textarea>
+            </div>
+            <div class="mb-3">
+                <label for="source" class="form-label">Source</label>
+                <select
+                    class="form-control"
+                    value="{{values.source}}"
+                    name="source"
+                >
+                    {% for source in sources %}
+                    <option name="source" value="{{source.id}}">
+                        {{source.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock income_content %}

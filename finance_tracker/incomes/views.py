@@ -31,3 +31,22 @@ def index(request):
         'page_range': page_range
     }
     return render(request, 'incomes/index.html', context)
+
+def add_income(request):
+    sources = Source.objects.all()
+    context = {
+        'sources': sources,
+        'values': request.POST
+    }
+    
+    if request.method == "POST":
+        amount = request.POST["amount"]
+        date = request.POST["date"]
+        description = request.POST["description"]
+        source_id = request.POST["source"]
+
+        Income.objects.create(amount=amount, date=date, description=description, owner=request.user, source=Source.objects.get(pk=source_id))
+        messages.success(request, "Income saved successfully")
+        return redirect("index")
+    return render(request, 'incomes/add_income.html', context)
+    
