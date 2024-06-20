@@ -1,3 +1,4 @@
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import render, redirect
 from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.views import View
@@ -47,7 +48,7 @@ class RegisterView(View):
 
             # send register email
             email_subject = 'Welcome to Finance Tracker'
-            email_body = f"You have been successfully registered as {user.username}\n Please use the below link to verify your account:\n{activate_url}"
+            email_body = f"Dear {user.username}, your account has been created successfully\n Please use the below link to activate your account:\n{activate_url}"
             email_from = 'noreply@semycolon.com'
             recipient_list = [user.email]
 
@@ -167,6 +168,69 @@ class LogoutView(View):
             pass
         auth.logout(request)
         messages.success(request, "You have been logged out")
-        return redirect('login')
+        # return redirect('login')
     
 
+class ResetPasswordView(View):
+    def get(self, request):
+        return render(request, "authentication/reset-password.html")
+
+    def post(self, request):
+        email = request.POST["email"]
+
+        context = {
+            'values': request.POST
+        }
+
+        if not validate_email(email):
+            messages.error(request, "Invalid Email")
+            return render(request, "authentication/reset-password.html", context)
+
+        try :
+            user = User.objects.get(email=email)
+        except Exception:
+            messages.error(request, "User with {email} doesn't exist")
+            return render(request, "authentication/reset-password.html", context)
+        
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        domain = get_current_site(request).domain
+        link = reverse('reset-user-password', kwargs={'uidb64': uidb64, 'token': PasswordResetTokenGenerator().make_token(user)})
+        password_reset_url = "http://" + domain + link
+
+        # send register email
+        email_subject = 'Finance Tracker Password Reset'
+        email_body = f"Dear {user.username}\n Please use the below link to reset your password:\n{password_reset_url}"
+        email_from = 'noreply@semycolon.com'
+        recipient_list = [user.email]
+
+        email = EmailMessage(
+            email_subject,
+            email_body,
+            email_from,
+            recipient_list
+        )
+        email.send(fail_silently=False)
+
+        messages.success(request, "We have sent you an email to reset your password")
+
+
+        return render(request, "authentication/reset-password.html", context)
+
+
+# class ResetUserPasswordView(View):
+#     def get(self, request, uidb64, token):
+#         context = {
+#             'uidb64': uidb64,
+#             'token': token
+#         }
+    
+#         return render(request, "authentication/set-new-password.html", context)
+    
+#     def post(self, request, uidb64, token):
+#         id = force_str(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk=id)
+
+#         old_password = request.POST["oldPassword"]
+
+#         new_password = request.POST["newPassword"]
+#         return render(request, "authentication/set-new-password.html")

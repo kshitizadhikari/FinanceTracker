@@ -26,9 +26,6 @@
                         aria-current="page"
                         href="#"
                     >
-                        <svg class="bi">
-                            <use xlink:href="#house-fill" />
-                        </svg>
                         Dashboard
                     </a>
                 </li>
@@ -37,9 +34,6 @@
                         class="nav-link d-flex align-items-center gap-2"
                         href="{% url "income-index" %}"
                     >
-                        <svg class="bi">
-                            <use xlink:href="#puzzle" />
-                        </svg>
                         Incomes
                     </a>
                 </li>
@@ -48,9 +42,6 @@
                         class="nav-link d-flex align-items-center gap-2"
                         href="{% url "index" %}"
                     >
-                        <svg class="bi">
-                            <use xlink:href="#cart" />
-                        </svg>
                         Expenses
                     </a>
                 </li>
@@ -79,9 +70,6 @@
                             class="nav-link d-flex align-items-center gap-2"
                             href="#"
                         >
-                            <svg class="bi">
-                                <use xlink:href="#file-earmark-text" />
-                            </svg>
                             Income Summary
                         </a>
                     </li>
@@ -90,9 +78,6 @@
                             class="nav-link d-flex align-items-center gap-2"
                             href="#"
                         >
-                            <svg class="bi">
-                                <use xlink:href="#file-earmark-text" />
-                            </svg>
                             Expense Summary
                         </a>
                     </li>
@@ -121,9 +106,6 @@
                             class="nav-link d-flex align-items-center gap-2"
                             href="{% url "userpreferences-index" %}"
                         >
-                            <svg class="bi">
-                                <use xlink:href="#gear-wide-connected" />
-                            </svg>
                             General Setting
                         </a>
                     </li>
@@ -132,10 +114,16 @@
                             class="nav-link d-flex align-items-center gap-2"
                             href="#"
                         >
-                            <svg class="bi">
-                                <use xlink:href="#gear-wide-connected" />
-                            </svg>
+                            
                             Account Setting
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link d-flex align-items-center gap-2"
+                            href="{% url "reset-password" %}"
+                        >
+                            ResetPassword
                         </a>
                     </li>
                 </ul>
