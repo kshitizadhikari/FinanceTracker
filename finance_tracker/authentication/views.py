@@ -168,69 +168,76 @@ class LogoutView(View):
             pass
         auth.logout(request)
         messages.success(request, "You have been logged out")
-        # return redirect('login')
+        return redirect('login')
     
 
 class ResetPasswordView(View):
     def get(self, request):
         return render(request, "authentication/reset-password.html")
 
+
     def post(self, request):
-        email = request.POST["email"]
+        form_email = request.POST.get("email")
 
         context = {
             'values': request.POST
         }
 
-        if not validate_email(email):
+        if not validate_email(form_email):
             messages.error(request, "Invalid Email")
             return render(request, "authentication/reset-password.html", context)
 
-        try :
-            user = User.objects.get(email=email)
-        except Exception:
-            messages.error(request, "User with {email} doesn't exist")
+        try:
+            user = User.objects.get(email=form_email)
+        except User.DoesNotExist:
+            messages.error(request, f"User with email {form_email} doesn't exist")
             return render(request, "authentication/reset-password.html", context)
         
         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
         domain = get_current_site(request).domain
-        link = reverse('reset-user-password', kwargs={'uidb64': uidb64, 'token': PasswordResetTokenGenerator().make_token(user)})
-        password_reset_url = "http://" + domain + link
+        token = PasswordResetTokenGenerator().make_token(user)
+        link = reverse('reset-user-password', kwargs={'uidb64': uidb64, 'token': token})
+        password_reset_url = f"http://{domain}{link}"
 
-        # send register email
+        # send reset email
         email_subject = 'Finance Tracker Password Reset'
-        email_body = f"Dear {user.username}\n Please use the below link to reset your password:\n{password_reset_url}"
+        email_body = f"Dear {user.username},\n\nPlease use the link below to reset your password:\n{password_reset_url}"
         email_from = 'noreply@semycolon.com'
         recipient_list = [user.email]
 
-        email = EmailMessage(
+        reset_email = EmailMessage(
             email_subject,
             email_body,
             email_from,
             recipient_list
         )
-        email.send(fail_silently=False)
+        reset_email.send(fail_silently=False)
 
         messages.success(request, "We have sent you an email to reset your password")
+        return redirect("index")
 
-
-        return render(request, "authentication/reset-password.html", context)
-
-
-# class ResetUserPasswordView(View):
-#     def get(self, request, uidb64, token):
-#         context = {
-#             'uidb64': uidb64,
-#             'token': token
-#         }
+class ResetUserPasswordView(View):
+    def get(self, request, uidb64, token):
+        context = {
+            'uidb64': uidb64,
+            'token': token
+        }
+        return render(request, "authentication/set-new-password.html", context)
     
-#         return render(request, "authentication/set-new-password.html", context)
-    
-#     def post(self, request, uidb64, token):
-#         id = force_str(urlsafe_base64_decode(uidb64))
-#         user = User.objects.get(pk=id)
+    def post(self, request, uidb64, token):
+        try:
+            user_id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=user_id)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
 
-#         old_password = request.POST["oldPassword"]
-
-#         new_password = request.POST["newPassword"]
-#         return render(request, "authentication/set-new-password.html")
+        old_password = request.POST.get("oldPassword")
+        if not auth.authenticate(username=user.username, password=old_password):
+            messages.error(request, "Password doesn't match current password")
+            return redirect("reset-user-password", uidb64, token)
+        
+        new_password = request.POST.get("newPassword")
+        user.set_password(new_password)
+        user.save()
+        messages.success(request, "Your new password has been set successfully")
+        return redirect("login")
