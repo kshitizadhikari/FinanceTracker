@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -101,3 +102,34 @@ def delete_income(request, id):
     income.delete()
     messages.success(request, "Income deleted successfully")
     return redirect("income-index")
+
+
+
+def income_source_data(request):
+    today_date = datetime.date.today()
+    six_months_ago_date =today_date - datetime.timedelta(days=30*6)
+
+    incomes = Income.objects.filter(owner=request.user, date__gte = six_months_ago_date, date__lte=today_date)
+    final_report = {}
+
+    def get_source_from_income(income):
+        return income.source
+    
+    source_list = list(set(map(get_source_from_income, incomes)))
+
+    def get_income_from_source(source):
+        incomes_from_source =  incomes.filter(source=source)
+        amount = 0
+        for item in incomes_from_source:
+            amount += item.amount
+        return amount
+
+    for source in source_list:
+        income_from_source = get_income_from_source(source)
+        final_report[str(source)] = income_from_source
+    
+    return JsonResponse(final_report,safe=False )
+
+
+# def income_summary(request):
+#     return render(request, "incomes/income_summary.html")
