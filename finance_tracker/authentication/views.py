@@ -1,4 +1,5 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from threading import Thread
 from django.shortcuts import render, redirect
 from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.views import View
@@ -15,6 +16,16 @@ from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 
+
+
+# EMAIL THREAD 
+class EmailThread(Thread):
+    def __init__(self, email):
+        self.email = email
+        Thread.__init__(self)
+
+    def run(self) -> None:
+        self.email.send(fail_silently=False)  
 
 class RegisterView(View):
     def get(self, request):
@@ -58,7 +69,7 @@ class RegisterView(View):
                 email_from,
                 recipient_list
             )
-            email.send(fail_silently=False)
+            EmailThread(email).start()
             
             messages.success(request, "Account created successfully!")
             return redirect('login')  # Redirect to a different page after successful registration
@@ -211,7 +222,7 @@ class ResetPasswordView(View):
             email_from,
             recipient_list
         )
-        reset_email.send(fail_silently=False)
+        EmailThread(reset_email).start()
 
         messages.success(request, "We have sent you an email to reset your password")
         return redirect("index")
