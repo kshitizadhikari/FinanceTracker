@@ -18,14 +18,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
     $(document).ready(function () {
+        const url = "/expense-category-data"
+
         const chartName = $("#bar-chart-heading").text().trim();
         import('{% static "js/barChart.js" %}').then((module) => {
-            module.default(chartName);
+            module.default(chartName, url);
         });
 
         const doughnut = $("#doughnut-chart-heading").text().trim();
         import('{% static "js/doughnutChart.js" %}').then((module) => {
-            module.default(doughnut);
+            module.default(doughnut, url);
         });
     });
 </script>
