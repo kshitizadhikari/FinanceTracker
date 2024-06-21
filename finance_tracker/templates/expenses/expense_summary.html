@@ -1,17 +1,17 @@
-{% extends "expenses/base_expense.html" %} {% block expense_content %} 
+{% extends "expenses/base_expense.html" %} {% block expense_content %}
 {% load static %}
-
+<link rel="stylesheet" href="{% static 'css/chart.css' %}" />
 <h1>Expense Summary</h1>
 
-<div>
-    <h3 id="bar-chart-heading" class="bar-chart-heading">Expense Bar Chart</h3>
+<div class="chart">
+    <h4 id="bar-chart-heading" class="bar-chart-heading">Expense Bar Chart</h4>
     <canvas id="barChart"></canvas>
 </div>
 
-<div>
-    <h3 id="doughnut-chart-heading" class="doughnut-chart-heading">
+<div class="chart">
+    <h4 id="doughnut-chart-heading" class="doughnut-chart-heading">
         Expense Doughnut Chart
-    </h3>
+    </h4>
     <canvas id="doughnut" height="100" width="100"></canvas>
 </div>
 
