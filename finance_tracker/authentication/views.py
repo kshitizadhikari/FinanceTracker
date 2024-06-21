@@ -16,8 +16,6 @@ from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 
-
-
 # EMAIL THREAD 
 class EmailThread(Thread):
     def __init__(self, email):

@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -103,3 +104,33 @@ def delete_expense(request, id):
     expense.delete()
     messages.success(request, "Expense deleted successfully")
     return redirect("index")
+
+
+def expense_category_data(request):
+    today_date = datetime.date.today()
+    six_months_ago_date =today_date - datetime.timedelta(days=30*6)
+
+    expenses = Expense.objects.filter(owner=request.user, date__gte = six_months_ago_date, date__lte=today_date)
+    final_report = {}
+
+    def get_category_from_expense(expense):
+        return expense.category
+    
+    category_list = list(set(map(get_category_from_expense, expenses)))
+
+    def get_expense_from_category(category):
+        expenses_from_category =  expenses.filter(category=category)
+        amount = 0
+        for item in expenses_from_category:
+            amount += item.amount
+        return amount
+
+    for category in category_list:
+        expense_from_category = get_expense_from_category(category)
+        final_report[str(category)] = expense_from_category
+    
+    return JsonResponse(final_report,safe=False )
+
+
+def expense_summary(request):
+    return render(request, "expenses/expense_summary.html")
