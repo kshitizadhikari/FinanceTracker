@@ -1,18 +1,27 @@
-const ctx = document.getElementById("myChart");
+let labelData = [];
+let datasetData = [];
 
-labelData = [];
-datasetData = [];
+const makeAPICall = async (url) => {
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+};
 
-fetch("/expense-category-data", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-})
-    .then((res) => res.json())
-    .then((data) => {
-        for (item in data) {
+const renderChart = async () => {
+    const url = "/expense-category-data";
+    const data = await makeAPICall(url);
+
+    if (data) {
+        for (let item in data) {
             console.log(item);
             labelData.push(item);
             datasetData.push({
@@ -22,6 +31,7 @@ fetch("/expense-category-data", {
             });
         }
 
+        const ctx = document.getElementById("myChart").getContext("2d");
         new Chart(ctx, {
             type: "bar",
             data: {
@@ -36,4 +46,7 @@ fetch("/expense-category-data", {
                 },
             },
         });
-    });
+    }
+};
+
+document.addEventListener("DOMContentLoaded", renderChart);
