@@ -1,0 +1,34 @@
+{% extends "incomes/base_income.html" %} {% block income_content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/chart.css' %}" />
+<h1>Income Summary</h1>
+
+<div class="chart">
+    <h4 id="bar-chart-heading" class="bar-chart-heading">Income Bar Chart</h4>
+    <canvas id="barChart"></canvas>
+</div>
+
+<div class="chart">
+    <h4 id="doughnut-chart-heading" class="doughnut-chart-heading">
+        Income Doughnut Chart
+    </h4>
+    <canvas id="doughnut"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module">
+    $(document).ready(function () {
+        const url = "/income/income-source-data";
+
+        const bar = $("#bar-chart-heading").text().trim();
+        import('{% static "js/barChart.js" %}').then((module) => {
+            module.default(bar, url);
+        });
+
+        const doughnut = $("#doughnut-chart-heading").text().trim();
+        import('{% static "js/doughnutChart.js" %}').then((module) => {
+            module.default(doughnut, url);
+        });
+    });
+</script>
+{% endblock income_content %}

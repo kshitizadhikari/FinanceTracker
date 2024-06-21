@@ -1,12 +1,12 @@
 import { makeGetRequest } from "./utils.js";
 
-export default function renderChart(chartName) {
+export default function renderChart(chartName, url) {
+    console.log(chartName, url)
     let labelData = [];
     let datasetData = [];
 
     const fetchDataAndRenderChart = async () => {
         try {
-            const url = "/expense-category-data";
             const data = await makeGetRequest(url);
 
             if (data) {

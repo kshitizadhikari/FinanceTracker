@@ -131,5 +131,5 @@ def income_source_data(request):
     return JsonResponse(final_report,safe=False )
 
 
-# def income_summary(request):
-#     return render(request, "incomes/income_summary.html")
+def income_summary(request):
+    return render(request, "incomes/income_summary.html")
