@@ -8,7 +8,7 @@ import json
 from django.db.models import Q, F
 from django.http import JsonResponse
 
-
+@login_required(login_url='/auth/login')
 def search_incomes(request):
     if request.method == "POST":
         search_str = json.loads(request.body).get("searchText", "") 
@@ -50,6 +50,8 @@ def index(request):
     }
     return render(request, 'incomes/index.html', context)
 
+
+@login_required(login_url='/auth/login')
 def add_income(request):
     sources = Source.objects.all()
     context = {
@@ -67,9 +69,10 @@ def add_income(request):
         messages.success(request, "Income saved successfully")
         return redirect("income-index")
     return render(request, 'incomes/add_income.html', context)
-    
-def add_income_source(request):
 
+
+@login_required(login_url='/auth/login')
+def add_income_source(request):
     if request.method == "POST":
         name = request.POST["name"]
         Source.objects.create(name=name)
@@ -77,6 +80,8 @@ def add_income_source(request):
         return redirect("income-index")
     return render(request, 'incomes/add_source.html')
 
+
+@login_required(login_url='/auth/login')
 def edit_income(request, id):
     income = Income.objects.get(pk=id)
     sources = Source.objects.all()
@@ -96,7 +101,7 @@ def edit_income(request, id):
 
     return render(request, 'incomes/edit_income.html', context) 
 
-
+@login_required(login_url='/auth/login')
 def delete_income(request, id):
     income = Income.objects.get(pk=id)
     income.delete()
@@ -105,6 +110,7 @@ def delete_income(request, id):
 
 
 
+@login_required(login_url='/auth/login')
 def income_source_data(request):
     today_date = datetime.date.today()
     six_months_ago_date =today_date - datetime.timedelta(days=30*6)
@@ -131,5 +137,6 @@ def income_source_data(request):
     return JsonResponse(final_report,safe=False )
 
 
+@login_required(login_url='/auth/login')
 def income_summary(request):
     return render(request, "incomes/income_summary.html")
