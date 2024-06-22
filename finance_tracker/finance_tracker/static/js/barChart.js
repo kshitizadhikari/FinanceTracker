@@ -1,7 +1,8 @@
 import { makeGetRequest } from "./utils.js";
 
+let barChartInstance = null;
+
 export default function renderChart(chartName, url) {
-    console.log(chartName, url)
     let labelData = [];
     let datasetData = [];
 
@@ -10,6 +11,10 @@ export default function renderChart(chartName, url) {
             const data = await makeGetRequest(url);
 
             if (data) {
+                // Clear previous data
+                labelData = [];
+                datasetData = [];
+
                 for (let item in data) {
                     labelData.push(item);
                     datasetData.push({
@@ -19,8 +24,15 @@ export default function renderChart(chartName, url) {
                     });
                 }
 
-                const ctx = $("#barChart")[0].getContext("2d"); // Use jQuery to get the canvas context
-                new Chart(ctx, {
+                const ctx = $("#barChart")[0].getContext("2d");
+
+                // Destroy existing chart instance if it exists
+                if (barChartInstance) {
+                    barChartInstance.destroy();
+                }
+
+                // Create a new chart instance
+                barChartInstance = new Chart(ctx, {
                     type: "bar",
                     data: {
                         labels: [chartName],

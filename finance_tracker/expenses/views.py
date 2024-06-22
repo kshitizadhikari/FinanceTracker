@@ -1,3 +1,4 @@
+from django.utils.dateparse import parse_date
 import datetime
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
@@ -109,9 +110,21 @@ def delete_expense(request, id):
 @login_required(login_url='/auth/login')
 def expense_category_data(request):
     today_date = datetime.date.today()
-    six_months_ago_date =today_date - datetime.timedelta(days=30*6)
 
-    expenses = Expense.objects.filter(owner=request.user, date__gte = six_months_ago_date, date__lte=today_date)
+    # Get date_from and date_to from request and parse them
+    date_from = parse_date(request.GET.get("date_from")) or today_date
+    date_to = parse_date(request.GET.get("date_to")) or today_date 
+
+    # Initialize the expenses queryset
+    expenses = Expense.objects.filter(owner=request.user)
+    
+    # Apply date filters
+    if date_from and date_to:
+        expenses = expenses.filter(date__range=[date_from, date_to])
+    elif date_from:
+        expenses = expenses.filter(date__gte=date_from)
+    elif date_to:
+        expenses = expenses.filter(date__lte=date_to)
     final_report = {}
 
     def get_category_from_expense(expense):

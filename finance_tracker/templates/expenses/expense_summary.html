@@ -1,34 +1,116 @@
 {% extends "expenses/base_expense.html" %} {% block expense_content %}
-{% load static %}
+ {% load static %}
 <link rel="stylesheet" href="{% static 'css/chart.css' %}" />
+
 <h1>Expense Summary</h1>
 
-<div class="chart">
-    <h4 id="bar-chart-heading" class="bar-chart-heading">Expense Bar Chart</h4>
-    <canvas id="barChart"></canvas>
+<div class="mb-5 d-flex p-4 border border-dark">
+    <div class="form-group mb-4">
+        <input
+            type="date"
+            name="dateFrom"
+            id="dateFromField"
+            class="form-control form-control-sm"
+            placeholder="Start Date"
+        />
+        <div
+            class="invalid-feedback"
+            id="invalidFeedback"
+            style="display: none"
+        >
+            <p></p>
+        </div>
+    </div>
+    <div class="form-group mb-4">
+        <input
+            type="date"
+            name="dateTo"
+            id="dateToField"
+            class="form-control form-control-sm"
+            placeholder="Till Date"
+        />
+        <div
+            class="invalid-feedback"
+            id="invalidFeedback"
+            style="display: none"
+        >
+            <p></p>
+        </div>
+    </div>
 </div>
 
-<div class="chart">
-    <h4 id="doughnut-chart-heading" class="doughnut-chart-heading">
-        Expense Doughnut Chart
-    </h4>
-    <canvas id="doughnut" height="100" width="100"></canvas>
+    <div class="chart">
+        <h4 id="bar-chart-heading" class="bar-chart-heading">
+            Expense Bar Chart
+        </h4>
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <div class="chart">
+        <h4 id="doughnut-chart-heading" class="doughnut-chart-heading">
+            Expense Doughnut Chart
+        </h4>
+        <canvas id="doughnut" height="100" width="100"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+        $(document).ready(function () {
+            const today = new Date();
+    
+            // Get individual date components
+            const year = today.getFullYear();
+            // Months are zero-indexed
+            const month = String(today.getMonth() + 1).padStart(2, '0'); 
+            const day = String(today.getDate()).padStart(2, '0');
+    
+            // Format the date as yyyy-mm-dd
+            const formattedDate = `${year}-${month}-${day}`;
+    
+            let dateFromVal = formattedDate;
+            let dateToVal = formattedDate;
+    
+            const dateFrom = $("#dateFromField");
+            const dateTo = $("#dateToField");
+            let barChartInstance = null;
+            let doughnutChartInstance = null;
+    
+            function destroyChart(chartInstance) {
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+            }
+    
+            function updateCharts() {
+                const url = `/expense-category-data?date_from=${dateFromVal}&date_to=${dateToVal}`;
+    
+                const chartName = $("#bar-chart-heading").text().trim();
+                import('{% static "js/barChart.js" %}').then((module) => {
+                    destroyChart(barChartInstance);
+                    barChartInstance = module.default(chartName, url);
+                });
+    
+                const doughnut = $("#doughnut-chart-heading").text().trim();
+                import('{% static "js/doughnutChart.js" %}').then((module) => {
+                    destroyChart(doughnutChartInstance);
+                    doughnutChartInstance = module.default(doughnut, url);
+                });
+            }
+    
+            dateFrom.on("change", function(e) {
+                dateFromVal = e.target.value;
+                updateCharts();
+            });
+    
+            dateTo.on("change", function(e) {
+                dateToVal = e.target.value;
+                updateCharts();
+            });
+    
+            // Initial load
+            updateCharts();
+        });
+    </script>
+    
+    {% endblock expense_content %}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module">
-    $(document).ready(function () {
-        const url = "/expense-category-data"
-
-        const chartName = $("#bar-chart-heading").text().trim();
-        import('{% static "js/barChart.js" %}').then((module) => {
-            module.default(chartName, url);
-        });
-
-        const doughnut = $("#doughnut-chart-heading").text().trim();
-        import('{% static "js/doughnutChart.js" %}').then((module) => {
-            module.default(doughnut, url);
-        });
-    });
-</script>
-{% endblock expense_content %}

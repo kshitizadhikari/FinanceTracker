@@ -1,5 +1,7 @@
 import { makeGetRequest } from "./utils.js";
 
+let doughnutChartInstance = null;
+
 export default function renderChart(chartName, url) {
     let labelData = [];
     let datasetData = [];
@@ -15,7 +17,12 @@ export default function renderChart(chartName, url) {
                 }
 
                 const ctx = $("#doughnut")[0].getContext("2d"); // Use jQuery to get the canvas context
-                new Chart(ctx, {
+
+                if (doughnutChartInstance) {
+                    doughnutChartInstance.destroy();
+                }
+
+                doughnutChartInstance = new Chart(ctx, {
                     type: "doughnut",
                     data: {
                         labels: labelData,
