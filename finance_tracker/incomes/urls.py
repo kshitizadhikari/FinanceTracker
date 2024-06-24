@@ -3,6 +3,8 @@ from . import views
 from django.views.decorators.csrf import csrf_exempt
 
 
+# use /income/name when testing !!
+
 urlpatterns = [
     path('', views.index, name="income-index"),
     path('add-income', views.add_income, name="add-income"),

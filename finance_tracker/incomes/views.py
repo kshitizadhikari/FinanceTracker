@@ -1,4 +1,5 @@
 import datetime
+from django.utils.dateparse import parse_date
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -112,10 +113,27 @@ def delete_income(request, id):
 
 @login_required(login_url='/auth/login')
 def income_source_data(request):
-    today_date = datetime.date.today()
-    six_months_ago_date =today_date - datetime.timedelta(days=30*6)
+    # Initialize the incomes queryset
+    incomes = Income.objects.filter(owner=request.user)
 
-    incomes = Income.objects.filter(owner=request.user, date__gte = six_months_ago_date, date__lte=today_date)
+    # Get today's date
+    today_date = datetime.date.today()
+    current_month_date = datetime.date(today_date.year, today_date.month, 1)
+
+    # Get date_from and date_to from request and parse them
+    date_from = parse_date(request.GET.get("date_from")) or current_month_date
+    date_to = parse_date(request.GET.get("date_to")) or current_month_date
+
+
+    # Apply date filters
+    if date_from and date_to:
+        incomes = incomes.filter(date__range=[date_from, date_to])
+    elif date_from:
+        incomes = incomes.filter(date__gte=date_from)
+    elif date_to:
+        incomes = incomes.filter(date__lte=date_to)
+
+    
     final_report = {}
 
     def get_source_from_income(income):
@@ -135,7 +153,6 @@ def income_source_data(request):
         final_report[str(source)] = income_from_source
     
     return JsonResponse(final_report,safe=False )
-
 
 @login_required(login_url='/auth/login')
 def income_summary(request):

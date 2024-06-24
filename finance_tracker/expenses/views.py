@@ -28,7 +28,7 @@ def search_expenses(request):
 
 @login_required(login_url='/auth/login')
 def index(request):
-    pageItemCount = 2
+    pageItemCount = 5
     expenses = Expense.objects.filter(owner=request.user)
     paginator = Paginator(expenses, pageItemCount)
     page_num = 1
@@ -109,15 +109,19 @@ def delete_expense(request, id):
 
 @login_required(login_url='/auth/login')
 def expense_category_data(request):
-    today_date = datetime.date.today()
-
-    # Get date_from and date_to from request and parse them
-    date_from = parse_date(request.GET.get("date_from")) or today_date
-    date_to = parse_date(request.GET.get("date_to")) or today_date 
 
     # Initialize the expenses queryset
     expenses = Expense.objects.filter(owner=request.user)
-    
+
+    # Get today's date
+    today_date = datetime.date.today()
+    current_month_date = datetime.date(today_date.year, today_date.month, 1)
+
+    # Get date_from and date_to from request and parse them
+    date_from = parse_date(request.GET.get("date_from")) or current_month_date
+    date_to = parse_date(request.GET.get("date_to")) or current_month_date
+
+
     # Apply date filters
     if date_from and date_to:
         expenses = expenses.filter(date__range=[date_from, date_to])
@@ -125,6 +129,8 @@ def expense_category_data(request):
         expenses = expenses.filter(date__gte=date_from)
     elif date_to:
         expenses = expenses.filter(date__lte=date_to)
+
+    
     final_report = {}
 
     def get_category_from_expense(expense):

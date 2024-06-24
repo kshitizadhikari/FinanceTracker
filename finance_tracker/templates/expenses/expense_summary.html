@@ -62,13 +62,14 @@
             const year = today.getFullYear();
             // Months are zero-indexed
             const month = String(today.getMonth() + 1).padStart(2, '0'); 
-            const day = String(today.getDate()).padStart(2, '0');
+            const endOfMonthDay = String(today.getDate()).padStart(2, '0');
     
             // Format the date as yyyy-mm-dd
-            const formattedDate = `${year}-${month}-${day}`;
+            const formattedStartDate = `${year}-${month}-01`;
+            const formattedEndDate = `${year}-${month}-${endOfMonthDay}`;
     
-            let dateFromVal = formattedDate;
-            let dateToVal = formattedDate;
+            let dateFromVal = formattedStartDate;
+            let dateToVal = formattedEndDate;
     
             const dateFrom = $("#dateFromField");
             const dateTo = $("#dateToField");
