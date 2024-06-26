@@ -34,7 +34,7 @@ class RegisterView(View):
         form_email = request.POST['email']
         form_password = request.POST['password']
 
-        if len(form_password) < 6:
+        if len(form_password) < 8:
             messages.error(request, "Password Too Short")
         elif User.objects.filter(username=form_username).exists():
             messages.error(request, f"User already exists with the username {form_username}")
@@ -68,7 +68,6 @@ class RegisterView(View):
                 recipient_list
             )
             EmailThread(email).start()
-            
             messages.success(request, "Account created successfully!")
             return redirect('login')  # Redirect to a different page after successful registration
         
