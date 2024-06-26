@@ -68,7 +68,7 @@ class RegisterView(View):
                 recipient_list
             )
             EmailThread(email).start()
-            messages.success(request, "Account created successfully!")
+            messages.success(request, "Account created successfully. A mail has been sent to the registered email. Please use that to activate the account !")
             return redirect('login')  # Redirect to a different page after successful registration
         
         return render(request, 'authentication/register.html')
