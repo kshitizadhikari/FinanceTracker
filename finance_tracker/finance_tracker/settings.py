@@ -18,6 +18,9 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env()
+environ.Env.read_env()
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,9 +30,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=xo4p28kl3#lgl7!xk=62a#0fu8(h!0t_u9cv+)1)lh6)z%=f6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get(env('DEBUG'), True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.onrender.com', 'localhost']
 
 
 # Application definition
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -95,9 +99,6 @@ WSGI_APPLICATION = 'finance_tracker.wsgi.application'
 # }
 
 
-env = environ.Env()
-environ.Env.read_env()
-
 
 DATABASES = {
     'default': dj_database_url.parse(env('DATABASE_URL'))
@@ -142,6 +143,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'finance_tracker/static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', '/static')
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
