@@ -143,7 +143,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'finance_tracker/static')
 ]
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', '/static')
-STATIC_ROOT = "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
