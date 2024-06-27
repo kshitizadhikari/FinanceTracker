@@ -18,6 +18,7 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -30,7 +31,7 @@ environ.Env.read_env()
 SECRET_KEY = 'django-insecure-=xo4p28kl3#lgl7!xk=62a#0fu8(h!0t_u9cv+)1)lh6)z%=f6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get(env('DEBUG'), True)
+DEBUG = env('DEBUG', True)
 
 ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1']
 
